@@ -21,6 +21,10 @@ class TaskOut(BaseModel):
     title: str
     done: bool
     shift: str | None
+    priority: str
+    time_start: str | None
+    time_end: str | None
+    is_habit: bool
 
     model_config = {"from_attributes": True}
 
@@ -41,6 +45,7 @@ class StatsResponse(BaseModel):
     total: int
     done: int
     percent: int
+    by_day: list[dict]
 
 
 class ToggleRequest(BaseModel):
@@ -52,6 +57,10 @@ class CreateTaskRequest(BaseModel):
     category: str = "routine"
     title: str
     shift: str | None = None
+    priority: str = "medium"
+    time_start: str | None = None
+    time_end: str | None = None
+    is_habit: bool = False
 
 
 class DeleteRequest(BaseModel):
@@ -95,7 +104,22 @@ def get_stats(db: Session = Depends(get_db)):
     seed_week(db, week_start)
     streak = compute_streak(db, today)
     week = compute_week_stats(db, week_start)
-    return StatsResponse(streak=streak, **week)
+
+    by_day = []
+    for i in range(7):
+        day = week_start + timedelta(days=i)
+        tasks = db.query(Task).filter(Task.date == day).all()
+        total = len(tasks)
+        done = sum(1 for t in tasks if t.done)
+        by_day.append({
+            "weekday": WEEKDAY_RU[i],
+            "date": str(day),
+            "total": total,
+            "done": done,
+            "percent": round(done / total * 100) if total else 0,
+        })
+
+    return StatsResponse(streak=streak, by_day=by_day, **week)
 
 
 @router.post("/tasks/toggle", response_model=TaskOut)
@@ -117,11 +141,33 @@ def create_task(body: CreateTaskRequest, db: Session = Depends(get_db)):
         category=body.category,
         title=body.title,
         shift=body.shift,
+        priority=body.priority,
+        time_start=body.time_start,
+        time_end=body.time_end,
+        is_habit=body.is_habit,
         done=False,
     )
     db.add(task)
     db.commit()
     db.refresh(task)
+    # If habit — seed for all remaining days of the week
+    if body.is_habit:
+        week_start = get_week_start(body.date)
+        for i in range(7):
+            day = week_start + timedelta(days=i)
+            if day == body.date:
+                continue
+            existing = db.query(Task).filter(Task.date == day, Task.title == body.title, Task.is_habit == True).first()
+            if not existing:
+                db.add(Task(
+                    date=day,
+                    category=body.category,
+                    title=body.title,
+                    priority=body.priority,
+                    is_habit=True,
+                    done=False,
+                ))
+        db.commit()
     return TaskOut.model_validate(task)
 
 

@@ -1,0 +1,255 @@
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Tokens ─────────────────────────────────────────── */
+:root {
+  --bg: #0f0f13;
+  --surface: #1a1a24;
+  --surface2: #22222f;
+  --border: #2e2e40;
+  --text: #e8e8f0;
+  --muted: #7a7a9a;
+  --accent: #7c6af5;
+  --work: #f59e0b;
+  --train: #22c55e;
+  --project: #7c6af5;
+  --rest: #38bdf8;
+  --routine: #e879f9;
+  --done-opacity: 0.45;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+/* ─── Base ───────────────────────────────────────────── */
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── App ────────────────────────────────────────────── */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 32px;
+}
+
+/* ─── Header ─────────────────────────────────────────── */
+.header {
+  padding: 20px 16px 0;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.header .subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+/* ─── Streak Panel ───────────────────────────────────── */
+.streak-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 16px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  text-align: center;
+}
+.stat-card .value {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+.stat-card .label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-card.streak .value { color: #fb923c; }
+.stat-card.done-stat .value { color: var(--train); }
+.stat-card.percent .value { color: var(--accent); }
+
+/* ─── Progress bar ───────────────────────────────────── */
+.progress-wrap {
+  padding: 0 16px 4px;
+}
+.progress-bar-bg {
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Week Timeline ──────────────────────────────────── */
+.week-timeline {
+  padding: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Day Card ───────────────────────────────────────── */
+.day-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.day-card.today {
+  border-color: var(--accent);
+}
+.day-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--surface2);
+}
+.day-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.day-label .weekday {
+  font-weight: 700;
+  font-size: 15px;
+}
+.day-label .date-str {
+  font-size: 12px;
+  color: var(--muted);
+}
+.today-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 99px;
+  letter-spacing: 0.3px;
+}
+.day-card-tasks {
+  padding: 8px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ─── Task Item ──────────────────────────────────────── */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.2s, background 0.15s;
+  user-select: none;
+}
+.task-item:active { background: var(--surface2); }
+.task-item.done { opacity: var(--done-opacity); }
+
+.cat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cat-dot.work    { background: var(--work); }
+.cat-dot.train   { background: var(--train); }
+.cat-dot.project { background: var(--project); }
+.cat-dot.rest    { background: var(--rest); }
+.cat-dot.routine { background: var(--routine); }
+
+.task-title {
+  flex: 1;
+  font-size: 14px;
+}
+.task-item.done .task-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.task-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.task-item.done .task-check {
+  background: var(--train);
+  border-color: var(--train);
+  color: #fff;
+}
+
+/* ─── Loading / Error ────────────────────────────────── */
+.center-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--muted);
+  padding: 32px;
+  text-align: center;
+}
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-box {
+  background: #3d1515;
+  border: 1px solid #7f2020;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  color: #ff8080;
+  font-size: 14px;
+}
+
+/* ─── Empty day ──────────────────────────────────────── */
+.empty-day {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 4px 0;
+}

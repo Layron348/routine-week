@@ -6,7 +6,7 @@ import { StreakPanel } from "./components/StreakPanel";
 import { WeekTimeline } from "./components/WeekTimeline";
 
 export default function App() {
-  const { plan, stats, loading, error, toggleTask } = usePlan();
+  const { plan, stats, loading, error, toggleTask, addTask, deleteTask } = usePlan();
 
   if (loading) {
     return (
@@ -33,7 +33,7 @@ export default function App() {
     <div className="app">
       <Header />
       <StreakPanel stats={stats} />
-      <WeekTimeline plan={plan} onToggle={toggleTask} />
+      <WeekTimeline plan={plan} onToggle={toggleTask} onAdd={addTask} onDelete={deleteTask} />
     </div>
   );
 }

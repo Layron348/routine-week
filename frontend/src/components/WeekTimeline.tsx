@@ -5,15 +5,17 @@ import { DayCard } from "./DayCard";
 interface Props {
   plan: PlanResponse;
   onToggle: (id: number) => void;
+  onAdd: (date: string, title: string, category: string) => void;
+  onDelete: (id: number) => void;
 }
 
-export const WeekTimeline: React.FC<Props> = ({ plan, onToggle }) => {
+export const WeekTimeline: React.FC<Props> = ({ plan, onToggle, onAdd, onDelete }) => {
   const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="week-timeline">
       {plan.days.map((day) => (
-        <DayCard key={day.date} day={day} today={today} onToggle={onToggle} />
+        <DayCard key={day.date} day={day} today={today} onToggle={onToggle} onAdd={onAdd} onDelete={onDelete} />
       ))}
     </div>
   );

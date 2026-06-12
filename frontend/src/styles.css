@@ -253,3 +253,104 @@ body {
   color: var(--muted);
   padding: 4px 0;
 }
+
+/* ─── Delete button ─────────────────────────────────── */
+.task-delete {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.task-item:hover .task-delete {
+  opacity: 1;
+}
+.task-delete:hover {
+  color: #ff6b6b;
+}
+
+/* ─── Add task button ───────────────────────────────── */
+.add-task-btn {
+  width: 100%;
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  margin-top: 2px;
+}
+.add-task-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ─── Add form ───────────────────────────────────────── */
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.add-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.add-input:focus {
+  border-color: var(--accent);
+}
+.add-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 13px;
+  padding: 7px 10px;
+  outline: none;
+  cursor: pointer;
+}
+.add-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-confirm {
+  flex: 1;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-confirm:hover { background: #6a59e0; }
+.btn-cancel {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.btn-cancel:hover { color: var(--text); }

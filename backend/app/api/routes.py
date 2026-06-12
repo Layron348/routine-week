@@ -47,6 +47,17 @@ class ToggleRequest(BaseModel):
     task_id: int
 
 
+class CreateTaskRequest(BaseModel):
+    date: date
+    category: str = "routine"
+    title: str
+    shift: str | None = None
+
+
+class DeleteRequest(BaseModel):
+    task_id: int
+
+
 WEEKDAY_RU = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
 
 
@@ -96,4 +107,30 @@ def toggle_task(body: ToggleRequest, db: Session = Depends(get_db)):
     task.done = not task.done
     db.commit()
     db.refresh(task)
+    return TaskOut.model_validate(task)
+
+
+@router.post("/tasks", response_model=TaskOut)
+def create_task(body: CreateTaskRequest, db: Session = Depends(get_db)):
+    task = Task(
+        date=body.date,
+        category=body.category,
+        title=body.title,
+        shift=body.shift,
+        done=False,
+    )
+    db.add(task)
+    db.commit()
+    db.refresh(task)
+    return TaskOut.model_validate(task)
+
+
+@router.delete("/tasks", response_model=TaskOut)
+def delete_task(body: DeleteRequest, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == body.task_id).first()
+    if not task:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Task not found")
+    db.delete(task)
+    db.commit()
     return TaskOut.model_validate(task)

@@ -43,12 +43,39 @@ export function usePlan() {
         body: JSON.stringify({ task_id: taskId }),
       });
       if (!res.ok) throw new Error("toggle failed");
-      // Refresh plan + stats
       await fetchAll();
     } catch {
       setError("Не удалось обновить задачу");
     }
   };
 
-  return { plan, stats, loading, error, toggleTask, refresh: fetchAll };
+  const addTask = async (date: string, title: string, category: string) => {
+    try {
+      const res = await fetch(`${BASE}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, title, category }),
+      });
+      if (!res.ok) throw new Error("create failed");
+      await fetchAll();
+    } catch {
+      setError("Не удалось создать задачу");
+    }
+  };
+
+  const deleteTask = async (taskId: number) => {
+    try {
+      const res = await fetch(`${BASE}/tasks`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task_id: taskId }),
+      });
+      if (!res.ok) throw new Error("delete failed");
+      await fetchAll();
+    } catch {
+      setError("Не удалось удалить задачу");
+    }
+  };
+
+  return { plan, stats, loading, error, toggleTask, addTask, deleteTask, refresh: fetchAll };
 }

@@ -1,11 +1,16 @@
+export type TaskStatus = "todo" | "in_progress" | "done" | "cancelled";
+export type TaskPriority = "high" | "medium" | "low";
+export type TaskCategory = "work" | "train" | "project" | "rest" | "routine";
+
 export interface Task {
   id: number;
   date: string;
-  category: "work" | "train" | "project" | "rest" | "routine";
+  category: TaskCategory;
   title: string;
   done: boolean;
+  status: TaskStatus;
   shift: string | null;
-  priority: "high" | "medium" | "low";
+  priority: TaskPriority;
   time_start: string | null;
   time_end: string | null;
   is_habit: boolean;
@@ -24,6 +29,7 @@ export interface PlanResponse {
 
 export interface DayStat {
   weekday: string;
+  weekday_full: string;
   date: string;
   total: number;
   done: number;

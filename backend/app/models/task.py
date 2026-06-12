@@ -7,11 +7,12 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date, nullable=False, index=True)
-    category = Column(String, nullable=False)        # work | train | project | rest | routine
+    category = Column(String, nullable=False)
     title = Column(String, nullable=False)
     done = Column(Boolean, default=False, nullable=False)
-    shift = Column(String, nullable=True)            # "13" | "10" | "9" | null
+    status = Column(String, default="todo", nullable=False)  # todo | in_progress | done | cancelled
+    shift = Column(String, nullable=True)
     priority = Column(String, default="medium", nullable=False)  # high | medium | low
-    time_start = Column(String, nullable=True)       # "09:00"
-    time_end = Column(String, nullable=True)         # "11:00"
+    time_start = Column(String, nullable=True)
+    time_end = Column(String, nullable=True)
     is_habit = Column(Boolean, default=False, nullable=False)

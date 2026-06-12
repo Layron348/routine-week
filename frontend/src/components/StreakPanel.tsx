@@ -5,52 +5,50 @@ interface Props { stats: StatsResponse; }
 
 export const StreakPanel: React.FC<Props> = ({ stats }) => {
   const today = new Date().toISOString().split("T")[0];
-  const circumference = 2 * Math.PI * 34;
-  const offset = circumference - (stats.percent / 100) * circumference;
+  const r = 32, circ = 2 * Math.PI * r;
+  const offset = circ - (stats.percent / 100) * circ;
 
   return (
     <>
-      <div className="stats-row">
+      <div className="summary">
+        <div className="summary-card sc-streak">
+          <div className="sc-val">🔥{stats.streak}</div>
+          <div className="sc-lbl">Стрик</div>
+        </div>
+        <div className="summary-card sc-done">
+          <div className="sc-val">{stats.done}</div>
+          <div className="sc-lbl">Сделано</div>
+        </div>
+        <div className="summary-card sc-pct">
+          <div className="sc-val">{stats.percent}%</div>
+          <div className="sc-lbl">Прогресс</div>
+        </div>
+      </div>
+
+      <div className="progress-row">
         <div className="ring-wrap">
-          <svg width="80" height="80" viewBox="0 0 80 80">
-            <circle className="ring-bg" cx="40" cy="40" r="34" />
-            <circle
-              className="ring-fill"
-              cx="40" cy="40" r="34"
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-            />
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle className="ring-bg" cx="36" cy="36" r={r} />
+            <circle className="ring-fg" cx="36" cy="36" r={r}
+              strokeDasharray={circ} strokeDashoffset={offset} />
           </svg>
-          <div className="ring-text">
-            <span className="ring-percent">{stats.percent}%</span>
+          <div className="ring-inner">
+            <span className="ring-pct">{stats.percent}%</span>
             <span className="ring-sub">неделя</span>
           </div>
         </div>
 
-        <div className="stats-grid">
-          <div className="stat-card s-done">
-            <div className="val">✅ {stats.done}</div>
-            <div className="lbl">Сделано</div>
-          </div>
-          <div className="stat-card s-total">
-            <div className="val">📋 {stats.total}</div>
-            <div className="lbl">Всего</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="week-chart">
-        {stats.by_day.map((d) => (
-          <div key={d.date} className="bar-col">
-            <div className="bar-track">
-              <div
-                className={`bar-fill${d.date === today ? " today" : ""}`}
-                style={{ height: `${d.percent}%` }}
-              />
+        <div className="week-bars">
+          {stats.by_day.map(d => (
+            <div key={d.date} className="wbar">
+              <div className="wbar-track">
+                <div className={`wbar-fill${d.date === today ? " is-today" : ""}`}
+                  style={{ height: `${d.percent}%` }} />
+              </div>
+              <span className="wbar-lbl">{d.weekday}</span>
             </div>
-            <span className="bar-label">{d.weekday}</span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   );

@@ -1,25 +1,22 @@
 import React from "react";
 
-interface Props {
-  streak: number;
-}
+interface Props { streak: number; }
 
 export const Header: React.FC<Props> = ({ streak }) => {
-  const today = new Date().toLocaleDateString("ru-RU", {
-    weekday: "long", day: "numeric", month: "long",
-  });
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
+  const weekday = ["вс","пн","вт","ср","чт","пт","сб"][today.getDay()];
 
   return (
-    <header className="header">
-      <div className="header-left">
-        <h1>Routine Week</h1>
-        <p className="subtitle">{today}</p>
+    <div className="topbar">
+      <div className="topbar-brand">
+        <div className="brand-icon">📅</div>
+        <span className="brand-name">Routine Week</span>
       </div>
-      <div className="streak-badge">
-        <span className="fire">🔥</span>
-        <span className="streak-num">{streak}</span>
-        <span className="streak-label">стрик</span>
+      <div className="topbar-right">
+        <div className="date-chip">{weekday}, {dateStr}</div>
+        <div className="streak-pill">🔥 {streak}</div>
       </div>
-    </header>
+    </div>
   );
 };

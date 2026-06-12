@@ -1,79 +1,74 @@
 import React from "react";
 import { StatsResponse, PlanResponse } from "../types";
 
-interface Props {
-  stats: StatsResponse;
-  plan: PlanResponse;
-}
-
 const CAT_CONFIG = [
-  { key: "work",    emoji: "💼", label: "Работа",     color: "var(--work)" },
-  { key: "train",   emoji: "🏋️", label: "Тренировки", color: "var(--train)" },
-  { key: "project", emoji: "🚀", label: "Проект",     color: "var(--project)" },
-  { key: "rest",    emoji: "😴", label: "Отдых",      color: "var(--rest)" },
-  { key: "routine", emoji: "☀️", label: "Рутина",     color: "var(--routine)" },
+  { k: "work",    e: "💼", l: "Работа",     c: "var(--cat-work)" },
+  { k: "train",   e: "🏋️", l: "Тренировки", c: "var(--cat-train)" },
+  { k: "project", e: "🚀", l: "Проект",     c: "var(--cat-project)" },
+  { k: "rest",    e: "😴", l: "Отдых",      c: "var(--cat-rest)" },
+  { k: "routine", e: "☀️", l: "Рутина",     c: "var(--cat-routine)" },
 ];
+
+interface Props { stats: StatsResponse; plan: PlanResponse; }
 
 export const StatsView: React.FC<Props> = ({ stats, plan }) => {
   const today = new Date().toISOString().split("T")[0];
   const allTasks = plan.days.flatMap(d => d.tasks);
-
-  // Category breakdown
-  const catStats = CAT_CONFIG.map(c => ({
+  const cats = CAT_CONFIG.map(c => ({
     ...c,
-    total: allTasks.filter(t => t.category === c.key).length,
-    done:  allTasks.filter(t => t.category === c.key && t.done).length,
+    total: allTasks.filter(t => t.category === c.k).length,
+    done:  allTasks.filter(t => t.category === c.k && t.done).length,
   })).filter(c => c.total > 0);
 
   return (
     <div className="stats-view">
-      <p className="stats-section-title">По дням недели</p>
-      <div className="stats-day-list">
+      <div className="stats-block">
+        <div className="stats-block-title">Прогресс по дням</div>
         {stats.by_day.map(d => (
-          <div key={d.date} className={`stats-day-row${d.date === today ? " today-row" : ""}`}>
-            <span className="stats-day-name">{d.weekday}</span>
-            <div className="stats-bar-bg">
-              <div
-                className={`stats-bar-fill${d.date === today ? " today-fill" : ""}`}
-                style={{ width: `${d.percent}%` }}
-              />
+          <div key={d.date} className="stats-day-row">
+            <span className="sdr-name">{d.weekday}</span>
+            <div className="sdr-bar">
+              <div className={`sdr-fill${d.date === today ? " today" : ""}`}
+                style={{ width: `${d.percent}%` }} />
             </div>
-            <span className="stats-day-num">{d.done}/{d.total}</span>
+            <span className="sdr-num">{d.done}/{d.total}</span>
           </div>
         ))}
       </div>
 
-      {catStats.length > 0 && (
-        <>
-          <p className="stats-section-title">По категориям</p>
-          <div className="cat-list">
-            {catStats.map(c => (
-              <div key={c.key} className="cat-card">
-                <span className="cat-icon">{c.emoji}</span>
-                <div className="cat-info">
-                  <div className="cat-name">{c.label}</div>
-                  <div className="cat-val" style={{ color: c.color }}>
-                    {c.done}<span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 400 }}>/{c.total}</span>
+      {cats.length > 0 && (
+        <div className="stats-block">
+          <div className="stats-block-title">По категориям</div>
+          <div className="cat-grid">
+            {cats.map(c => (
+              <div key={c.k} className="cat-item">
+                <span className="cat-item-icon">{c.e}</span>
+                <div>
+                  <div className="cat-item-name">{c.l}</div>
+                  <div className="cat-item-val" style={{ color: c.c }}>
+                    {c.done}<span style={{ fontSize: 12, color: "var(--muted)", fontWeight: 400 }}>/{c.total}</span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
 
-      <p className="stats-section-title">Итого за неделю</p>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-        {[
-          { label: "🔥 Стрик", val: `${stats.streak} дн`, color: "#f97316" },
-          { label: "✅ Сделано", val: stats.done, color: "var(--train)" },
-          { label: "📊 Прогресс", val: `${stats.percent}%`, color: "var(--accent)" },
-        ].map(s => (
-          <div key={s.label} className="stat-card" style={{ textAlign: "center" }}>
-            <div className="val" style={{ color: s.color, fontSize: 20 }}>{s.val}</div>
-            <div className="lbl" style={{ marginTop: 4 }}>{s.label}</div>
-          </div>
-        ))}
+      <div className="stats-block">
+        <div className="stats-block-title">Итоги недели</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+          {[
+            { l: "🔥 Стрик",   v: `${stats.streak} дн`, c: "#fb923c" },
+            { l: "✅ Сделано", v: String(stats.done),    c: "var(--green)" },
+            { l: "📊 Общий",   v: `${stats.percent}%`,   c: "var(--accent-h)" },
+          ].map(s => (
+            <div key={s.l} className="cat-item" style={{ flexDirection: "column", alignItems: "flex-start", gap: 4 }}>
+              <div className="cat-item-val" style={{ color: s.c }}>{s.v}</div>
+              <div className="cat-item-name">{s.l}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

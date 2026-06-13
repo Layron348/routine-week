@@ -1,5 +1,11 @@
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
+load_dotenv()
 
 from app.db import engine, Base
 from app.api.routes import router
@@ -15,7 +21,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create tables on startup
 Base.metadata.create_all(bind=engine)
 
 app.include_router(router, prefix="/api")
+
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+if STATIC_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="frontend")

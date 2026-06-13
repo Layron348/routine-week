@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { PlanResponse, StatsResponse } from "../types";
 
-const BASE = "/api";
+const BASE = import.meta.env.VITE_API_URL ?? "/api";
 
 export function usePlan() {
   const [plan, setPlan] = useState<PlanResponse | null>(null);

@@ -54,18 +54,25 @@ cp .env.example .env
 # Вставь свой BOT_TOKEN от @BotFather
 ```
 
-### 2. Backend
+### 2. Запуск через Docker (как на сервере)
+
+```bash
+docker compose up --build
+# → http://localhost:8000  (UI + API)
+```
+
+### 3. Или локально без Docker
+
+**Backend:**
 
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate   # Windows: .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Проверка: [http://localhost:8000/api/health](http://localhost:8000/api/health)
-
-### 3. Frontend
+**Frontend:**
 
 ```bash
 cd frontend
@@ -74,7 +81,7 @@ npm run dev
 # → http://localhost:5173
 ```
 
-### 4. Bot (опционально для локального теста)
+**Bot:**
 
 ```bash
 cd bot
@@ -86,9 +93,22 @@ python main.py
 > ⚠️ Для Telegram Mini App кнопка `web_app` требует **HTTPS** URL.
 > Для локальной разработки используй [ngrok](https://ngrok.com/):
 > ```bash
-> ngrok http 5173
+> ngrok http 8000
 > ```
 > Затем поставь https-адрес в `.env` → `MINI_APP_URL`.
+
+---
+
+## Деплой на сервер
+
+Полная инструкция: **[DEPLOY.md](./DEPLOY.md)** — Fly.io, Render, переменные, BotFather.
+
+Кратко:
+1. `BOT_TOKEN` от @BotFather
+2. Задеплой web (`Dockerfile` + `docker-compose.yml` / `fly.toml` / `render.yaml`)
+3. Задеплой bot (`Dockerfile.bot`) — отдельный always-on процесс
+4. `MINI_APP_URL` = HTTPS URL web-сервиса
+5. BotFather → Edit Web App URL
 
 ---
 

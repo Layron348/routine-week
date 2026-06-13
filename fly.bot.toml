@@ -1,0 +1,12 @@
+app = "routine-week-bot"
+primary_region = "ams"
+
+[build]
+  dockerfile = "Dockerfile.bot"
+
+[env]
+  PORT = "8080"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
